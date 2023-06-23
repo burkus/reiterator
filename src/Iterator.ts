@@ -89,7 +89,7 @@ export class Iterator {
         return new Iterator(iter())
     }
 
-    reduceRight(reducer: Function, init: any) {
+    reduce(reducer: Function, init: any) {
         let acc = init
         for (let i of this) {
             acc = reducer(acc, i)
@@ -108,16 +108,6 @@ export class Iterator {
         }
 
         return new Iterator(iter())
-    }
-
-    reduce(reducer: Function, init: any) {
-        let acc = init
-        const reversed = this.reverse()
-        for (let i of reversed) {
-            acc = reducer(acc, i)
-        }
-
-        return acc
     }
 
     collect() {
