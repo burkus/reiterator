@@ -113,8 +113,8 @@ export class Iterator {
 
     reduce(reducer: Function, init: any) {
         let acc = init
-        for (let i of this) {
-            acc = reducer(acc, i)
+        for (let [value, index] of this.enumerate()) {
+            acc = reducer(acc, value, index)
         }
 
         return acc
