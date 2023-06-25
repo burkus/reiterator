@@ -1,6 +1,6 @@
 
 export const range = (start: number, end: number, increment: number = 1) => {
-    const gen = function* () {
+    const iter = function* () {
         let i = start
         while (i < end) {
             yield i
@@ -8,10 +8,10 @@ export const range = (start: number, end: number, increment: number = 1) => {
         }
     }
 
-    return new Iterator(gen())
+    return new Iterator(iter())
 }
 
-export const chain = (...iterables: IterableIterator<any>[]) => {
+export const chain = (...iterables: IterableIterator<any>[] | Iterator[]) => {
     const iter = function* () {
         for (let it of iterables) {
             for (let i of it) {
@@ -22,8 +22,30 @@ export const chain = (...iterables: IterableIterator<any>[]) => {
     return new Iterator(iter())
 }
 
-export const intoIter = (arr: any[]) => {
-    return new Iterator(arr[Symbol.iterator]())
+type JSCollection = Array<any> | Set<any> | Map<any, any>
+
+export const intoIter = (collection: JSCollection | object) => {
+    if(isJSCollection(collection)) { 
+        return new Iterator((collection as JSCollection)[Symbol.iterator]())
+    }
+    const iter = keyValueGenerator(collection as Record<string, unknown>)
+    return new Iterator(iter)
+}
+
+const isJSCollection = (thing: any) => {
+    if(typeof thing === 'object') {
+        const isCollection = thing instanceof Array 
+        || thing instanceof Set
+        || thing instanceof Map
+        return isCollection
+    }
+    return false
+}
+
+const keyValueGenerator = function* (obj: Record<string, unknown>) {
+    for (let key in obj) {
+        yield [key, obj[key]]
+    }
 }
 
 type IterableFnWithIndex<T> = (value: any, index: number) => T
@@ -112,5 +134,9 @@ export class Iterator {
 
     collect() {
         return Array.from(this)
+    }
+
+    collectSet() {
+        return new Set(this)
     }
 }
