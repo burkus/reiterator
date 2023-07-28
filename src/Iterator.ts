@@ -22,7 +22,7 @@ export const chain = (...iterables: IterableIterator<any>[] | Iterator[]) => {
     return new Iterator(iter())
 }
 
-type JSCollection = Array<any> | Set<any> | Map<any, any>
+type JSCollection = Array<any> | Set<any> | Map<any, any> | string
 
 export const intoIter = (collection: JSCollection | object) => {
     if(isJSCollection(collection)) { 
@@ -38,6 +38,8 @@ const isJSCollection = (thing: any) => {
         || thing instanceof Set
         || thing instanceof Map
         return isCollection
+    } else if(typeof thing === 'string') {
+        return true
     }
     return false
 }

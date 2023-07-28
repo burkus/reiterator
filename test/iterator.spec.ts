@@ -36,6 +36,14 @@ test('intoIter consumes Object', async () => {
     }
 })
 
+test('intoIter consumes string', async () => {
+    const s = "abcdef"
+    const iter = intoIter(s)
+    for(const c of iter) {
+        expect(s.indexOf(c)).toBeGreaterThanOrEqual(0)
+    }
+})
+
 test('collect returns array', async () => {
     const arr = range(0,10).collect()
     expect(arr).toEqual([0,1,2,3,4,5,6,7,8,9])
